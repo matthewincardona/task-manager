@@ -1,12 +1,15 @@
-// view/todo_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../view_model/todo_view_model.dart';
 
-class TodoView extends StatelessWidget {
-  const TodoView({super.key});
+class TodoView extends StatefulWidget {
+  const TodoView({Key? key}) : super(key: key);
 
+  @override
+  _TodoViewState createState() => _TodoViewState();
+}
+
+class _TodoViewState extends State<TodoView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,8 +22,15 @@ class TodoView extends StatelessWidget {
             itemCount: viewModel.todos.length,
             itemBuilder: (context, index) {
               final todo = viewModel.todos[index];
-              return ListTile(
+              return CheckboxListTile(
+                controlAffinity: ListTileControlAffinity.leading,
                 title: Text(todo.title),
+                value: todo.isCompleted,
+                onChanged: (newValue) {
+                  setState(() {
+                    todo.isCompleted = newValue ?? false;
+                  });
+                },
               );
             },
           );
