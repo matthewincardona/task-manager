@@ -2,15 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../model/todo.dart';
 import '../view_model/todo_view_model.dart';
 
 class TodoView extends StatelessWidget {
+  const TodoView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todo List'),
+        title: const Text('Todo List'),
       ),
       body: Consumer<TodoViewModel>(
         builder: (context, viewModel, child) {
@@ -27,23 +28,7 @@ class TodoView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTodoDialog(context),
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildItem(BuildContext context, TodoViewModel viewModel, int index,
-      Animation<double> animation, Todo todo) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: ListTile(
-        leading: Checkbox(
-          value: todo.isCompleted,
-          onChanged: (value) {
-            viewModel.toggleTodo(index);
-          },
-        ),
-        title: Text(todo.title),
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -55,12 +40,12 @@ class TodoView extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add Todo'),
+          title: const Text('Add Todo'),
           content: TextField(
             onChanged: (value) {
               newTodo = value;
             },
-            decoration: InputDecoration(hintText: 'Enter your todo'),
+            decoration: const InputDecoration(hintText: 'Enter your todo'),
           ),
           actions: <Widget>[
             TextButton(
@@ -71,13 +56,13 @@ class TodoView extends StatelessWidget {
                   Navigator.pop(context);
                 }
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../model/todo.dart';
 
 class TodoViewModel extends ChangeNotifier {
-  List<Todo> _todos = [];
+  final List<Todo> _todos = [];
 
   List<Todo> get todos => _todos;
 
