@@ -24,11 +24,16 @@ class _TodoViewState extends State<TodoView> {
               final todo = viewModel.todos[index];
               return CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
-                title: Text(todo.title),
+                title: Text(
+                  todo.title,
+                  style: todo.isCompleted
+                      ? TextStyle(decoration: TextDecoration.lineThrough)
+                      : null,
+                ),
                 value: todo.isCompleted,
                 onChanged: (newValue) {
                   setState(() {
-                    todo.isCompleted = newValue ?? false;
+                    viewModel.toggleTodo(index);
                   });
                 },
               );

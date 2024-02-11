@@ -1,5 +1,3 @@
-// view_model/todo_view_model.dart
-
 import 'package:flutter/material.dart';
 import '../model/todo.dart';
 
@@ -15,9 +13,6 @@ class TodoViewModel extends ChangeNotifier {
 
   void toggleTodo(int index) {
     _todos[index].isCompleted = !_todos[index].isCompleted;
-    if (_todos[index].isCompleted) {
-      _todos.removeAt(index);
-    }
     notifyListeners();
   }
 }
