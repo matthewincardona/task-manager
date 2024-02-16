@@ -88,11 +88,29 @@ class TodoViewModel extends ChangeNotifier {
     await prefs.remove('todos');
   }
 
-  // Constructor to set up the countdown timer when the view model is created
+  // Method to handle clearance of tasks if the app was not open at midnight
+  Future<void> handleMidnightClearance() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? lastClearanceTimestamp = prefs.getInt('lastClearanceTimestamp') ?? 0;
+    DateTime lastClearanceDateTime =
+        DateTime.fromMillisecondsSinceEpoch(lastClearanceTimestamp);
+    DateTime now = DateTime.now();
+
+    if (now.isAfter(DateTime(now.year, now.month, now.day, 0, 0)) &&
+        lastClearanceDateTime
+            .isBefore(DateTime(now.year, now.month, now.day, 0, 0))) {
+      clearTodos();
+    }
+
+    await prefs.setInt('lastClearanceTimestamp', now.millisecondsSinceEpoch);
+  }
+
+  // Constructor to set up the countdown timer and handle clearance of tasks
   TodoViewModel() {
     loadTodos().then((_) {
       calculateTimeUntilMidnight();
       startCountdownTimer();
+      handleMidnightClearance();
     });
   }
 
