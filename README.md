@@ -1,6 +1,6 @@
 # task_manager
 
-A new Flutter project.
+A simple, time-based task manager.
 
 ## Getting Started
 
