@@ -14,9 +14,9 @@ class _TodoViewState extends State<TodoView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Manager'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Task Manager'),
+      // ),
       body: const Column(
         children: [
           TodoList(), // Separate widget for todo list
@@ -39,8 +39,8 @@ class TodoList extends StatelessWidget {
     return Consumer<TodoViewModel>(
       builder: (context, viewModel, child) {
         return Container(
-          margin: const EdgeInsets.all(18.0),
-          padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+          margin: const EdgeInsets.fromLTRB(50.0, 80.0, 50.0, 20.0),
+          // padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -54,10 +54,10 @@ class TodoList extends StatelessWidget {
             ],
           ),
           child: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(height: 350),
+            constraints: const BoxConstraints.tightFor(height: 400),
             child: SingleChildScrollView(
               child: SizedBox(
-                height: 350,
+                height: 400,
                 child: ListView.builder(
                   itemCount: viewModel.todos.length,
                   itemBuilder: (context, index) {

@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Todo App',
+      title: 'Task Manager',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
