@@ -40,7 +40,6 @@ class TodoList extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Container(
           margin: const EdgeInsets.fromLTRB(50.0, 80.0, 50.0, 20.0),
-          // padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
@@ -62,19 +61,33 @@ class TodoList extends StatelessWidget {
                   itemCount: viewModel.todos.length,
                   itemBuilder: (context, index) {
                     final todo = viewModel.todos[index];
-                    return CheckboxListTile(
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(
-                        todo.title,
-                        style: todo.isCompleted
-                            ? const TextStyle(
-                                decoration: TextDecoration.lineThrough)
-                            : null,
-                      ),
-                      value: todo.isCompleted,
-                      onChanged: (newValue) {
-                        viewModel.toggleTodo(index);
+                    return Dismissible(
+                      key: Key(todo.title), // Use unique key for each todo
+                      onDismissed: (direction) {
+                        viewModel
+                            .removeTodo(index); // Remove todo from the list
                       },
+                      background: Container(
+                        color: Colors
+                            .red, // Background color when swiping to delete
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      child: CheckboxListTile(
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Text(
+                          todo.title,
+                          style: todo.isCompleted
+                              ? const TextStyle(
+                                  decoration: TextDecoration.lineThrough)
+                              : null,
+                        ),
+                        value: todo.isCompleted,
+                        onChanged: (newValue) {
+                          viewModel.toggleTodo(index);
+                        },
+                      ),
                     );
                   },
                 ),

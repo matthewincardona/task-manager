@@ -25,6 +25,13 @@ class TodoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Method to remove a todo
+  void removeTodo(int index) {
+    _todos.removeAt(index);
+    _saveTodos();
+    notifyListeners();
+  }
+
   // Method to clear all todos
   void clearTodos() {
     _todos.clear();
