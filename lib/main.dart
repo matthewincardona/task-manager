@@ -7,7 +7,8 @@ import 'package:task_manager/view_model/todo_view_model.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => TodoViewModel(),
+      create: (context) =>
+          TodoViewModel(context: context), // Pass the context here
       child: const MyApp(),
     ),
   );

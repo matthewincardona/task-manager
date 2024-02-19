@@ -11,16 +11,22 @@ class TodoView extends StatefulWidget {
 }
 
 class _TodoViewState extends State<TodoView> {
+  late TodoViewModel _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = Provider.of<TodoViewModel>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Task Manager'),
-      // ),
-      body: const Column(
+      body: Column(
         children: [
-          TodoList(), // Separate widget for todo list
-          CountdownView(), // Separate widget for countdown view
+          const TodoList(),
+          CountdownView(
+              viewModel: _viewModel), // Pass the view model to the widget
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -32,7 +38,7 @@ class _TodoViewState extends State<TodoView> {
 }
 
 class TodoList extends StatelessWidget {
-  const TodoList({super.key});
+  const TodoList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -101,14 +107,26 @@ class TodoList extends StatelessWidget {
 }
 
 class CountdownView extends StatelessWidget {
-  const CountdownView({super.key});
+  final TodoViewModel viewModel; // Define the viewModel parameter
+
+  const CountdownView({Key? key, required this.viewModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TodoViewModel>(
       builder: (context, viewModel, child) {
-        return Text(
-          'Time until todos clear: ${viewModel.calculateTimeUntilMidnight()}',
+        return Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  'Completed tasks: ${viewModel.completedTasksCount}/${viewModel.todos.length}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                )),
+            Text(
+              'Time until todos clear: ${viewModel.calculateTimeUntilMidnight()}',
+            ),
+          ],
         );
       },
     );

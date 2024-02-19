@@ -5,6 +5,8 @@ import '../model/todo.dart';
 import 'dart:convert';
 
 class TodoViewModel extends ChangeNotifier {
+  late final BuildContext _context;
+
   final List<Todo> _todos = [];
   late Timer _timer;
   late Duration _timeUntilMidnight;
@@ -58,12 +60,13 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   // Method to start the countdown timer
-  void startCountdownTimer() {
+  void startCountdownTimer(BuildContext context) {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       String timeRemaining = calculateTimeUntilMidnight();
       if (timeRemaining.isEmpty) {
-        // If countdown is empty, cancel timer
+        // If countdown is empty, cancel timer and show the completion popup
         _timer.cancel();
+        showCompletionPopup(context);
       } else {
         notifyListeners();
       }
@@ -113,10 +116,10 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   // Constructor to set up the countdown timer and handle clearance of tasks
-  TodoViewModel() {
+  TodoViewModel({required BuildContext context}) : _context = context {
     loadTodos().then((_) {
       calculateTimeUntilMidnight();
-      startCountdownTimer();
+      startCountdownTimer(_context);
       handleMidnightClearance();
     });
   }
@@ -126,5 +129,27 @@ class TodoViewModel extends ChangeNotifier {
   void dispose() {
     _timer.cancel();
     super.dispose();
+  }
+
+  int get completedTasksCount =>
+      _todos.where((todo) => todo.isCompleted).length;
+
+  // Add a function to show a popup at midnight with the completed tasks count
+  void showCompletionPopup(BuildContext context) {
+    int completedTasksToday = completedTasksCount;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Tasks completed today: $completedTasksToday'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }
