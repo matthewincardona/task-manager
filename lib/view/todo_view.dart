@@ -120,9 +120,13 @@ class CountdownView extends StatelessWidget {
         return Column(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.purple, Colors.orange]),
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -131,6 +135,7 @@ class CountdownView extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
