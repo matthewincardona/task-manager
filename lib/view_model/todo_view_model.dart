@@ -9,7 +9,7 @@ class TodoViewModel extends ChangeNotifier {
 
   final List<Todo> _todos = [];
   late Timer _timer;
-  late Duration _timeUntilMidnight;
+  // late Duration _timeUntilMidnight;
 
   List<Todo> get todos => _todos;
 
@@ -42,19 +42,23 @@ class TodoViewModel extends ChangeNotifier {
   }
 
   // Method to calculate the time remaining until midnight EST
-  String calculateTimeUntilMidnight() {
+  String calculateTimeUntilClear() {
     DateTime now = DateTime.now();
-    DateTime midnight = DateTime(now.year, now.month, now.day + 1, 0, 0);
-    _timeUntilMidnight = midnight.difference(now);
+    DateTime targetTime = DateTime(now.year, now.month, now.day, 17, 0); // 5 PM
+    if (now.hour >= 17) {
+      // If it's already past 5 PM today, calculate for 5 PM tomorrow
+      targetTime = targetTime.add(const Duration(days: 1));
+    }
+    Duration timeUntilTarget = targetTime.difference(now);
 
-    if (_timeUntilMidnight.inSeconds <= 0) {
+    if (timeUntilTarget.inSeconds <= 0) {
       // If countdown is zero or negative, clear todos and return empty string
       clearTodos();
       return '';
     }
 
-    int hours = _timeUntilMidnight.inHours;
-    int minutes = _timeUntilMidnight.inMinutes.remainder(60);
+    int hours = timeUntilTarget.inHours;
+    int minutes = timeUntilTarget.inMinutes.remainder(60);
 
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
   }
@@ -62,7 +66,7 @@ class TodoViewModel extends ChangeNotifier {
   // Method to start the countdown timer
   void startCountdownTimer(BuildContext context) {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      String timeRemaining = calculateTimeUntilMidnight();
+      String timeRemaining = calculateTimeUntilClear();
       if (timeRemaining.isEmpty) {
         // If countdown is empty, cancel timer and show the completion popup
         _timer.cancel();
@@ -118,7 +122,7 @@ class TodoViewModel extends ChangeNotifier {
   // Constructor to set up the countdown timer and handle clearance of tasks
   TodoViewModel({required BuildContext context}) : _context = context {
     loadTodos().then((_) {
-      calculateTimeUntilMidnight();
+      calculateTimeUntilClear();
       startCountdownTimer(_context);
       handleMidnightClearance();
     });

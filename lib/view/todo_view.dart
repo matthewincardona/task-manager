@@ -45,8 +45,10 @@ class TodoList extends StatelessWidget {
     return Consumer<TodoViewModel>(
       builder: (context, viewModel, child) {
         return Container(
-          margin: const EdgeInsets.fromLTRB(50.0, 80.0, 50.0, 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          margin: const EdgeInsets.fromLTRB(20, 80, 20, 20),
           decoration: BoxDecoration(
+            // border: Border.all(color: Colors.blueAccent),
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: [
@@ -117,14 +119,24 @@ class CountdownView extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Column(
           children: [
-            Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text(
-                  'Completed tasks: ${viewModel.completedTasksCount}/${viewModel.todos.length}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                )),
-            Text(
-              'Time until todos clear: ${viewModel.calculateTimeUntilMidnight()}',
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              margin: const EdgeInsets.only(bottom: 5),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                'Completed tasks: ${viewModel.completedTasksCount}/${viewModel.todos.length}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            const Text(
+              // 'To dos clear at 5pm. Time left: ${viewModel.calculateTimeUntilClear()}',
+              'Tasks clear at 5pm',
             ),
           ],
         );
