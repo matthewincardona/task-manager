@@ -46,7 +46,7 @@ class TodoList extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-          margin: const EdgeInsets.fromLTRB(20, 80, 20, 20),
+          margin: const EdgeInsets.fromLTRB(20, 80, 20, 50),
           decoration: BoxDecoration(
             // border: Border.all(color: Colors.blueAccent),
             color: Colors.white,
@@ -121,7 +121,7 @@ class CountdownView extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              margin: const EdgeInsets.only(bottom: 5),
+              margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(20),
