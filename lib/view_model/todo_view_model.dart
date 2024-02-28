@@ -14,6 +14,7 @@ class TodoViewModel extends ChangeNotifier {
   List<Todo> get todos => _todos;
 
   // Method to add a todo
+
   void addTodo(String title) {
     DateTime now = DateTime.now();
     int hour = now.hour;
@@ -28,12 +29,18 @@ class TodoViewModel extends ChangeNotifier {
       timestamp = DateTime(now.year, now.month, now.day, 9);
     }
 
-    _todos.add(Todo(title: title, timestamp: timestamp)); // Update timestamp
+    // Check if the newly added todo is past the deadline
+    bool isPastDeadline = timestamp.hour >= 17 || timestamp.hour < 9;
+
+    _todos.add(Todo(
+      title: title,
+      timestamp: timestamp,
+      isCompleted: isPastDeadline, // Mark as completed if past deadline
+    ));
     _saveTodos();
     notifyListeners();
   }
 
-  // Method to toggle a todo
   void toggleTodo(int index) {
     _todos[index].isCompleted = !_todos[index].isCompleted;
     _saveTodos();

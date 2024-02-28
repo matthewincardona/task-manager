@@ -38,7 +38,6 @@ class _TodoViewState extends State<TodoView> {
 }
 
 class TodoList extends StatelessWidget {
-  // Add a parameter to get the current hour
   const TodoList({Key? key, required this.currentHour}) : super(key: key);
 
   final int currentHour;
@@ -51,13 +50,10 @@ class TodoList extends StatelessWidget {
           child: Column(
             children: [
               ListView.builder(
-                shrinkWrap:
-                    true, // Ensure the ListView takes only the space it needs
+                shrinkWrap: true,
                 itemCount: viewModel.todos.length,
                 itemBuilder: (context, index) {
                   final todo = viewModel.todos[index];
-                  final bool isPastDeadline =
-                      todo.timestamp.hour >= 17 || todo.timestamp.hour < 9;
 
                   return Dismissible(
                     key: Key(todo.title),
@@ -74,14 +70,15 @@ class TodoList extends StatelessWidget {
                       controlAffinity: ListTileControlAffinity.leading,
                       title: Text(
                         todo.title,
-                        style: todo.isCompleted || isPastDeadline
+                        style: todo.isCompleted ||
+                                _isPastDeadline(todo.timestamp.hour)
                             ? const TextStyle(
                                 decoration: TextDecoration.lineThrough,
                                 color: Colors.grey) // Grey out past due tasks
                             : null,
                       ),
                       value: todo.isCompleted,
-                      onChanged: isPastDeadline
+                      onChanged: _isPastDeadline(todo.timestamp.hour)
                           ? null // Disable checking for past due tasks
                           : (newValue) {
                               viewModel.toggleTodo(index);
@@ -90,12 +87,15 @@ class TodoList extends StatelessWidget {
                   );
                 },
               ),
-              // Additional widgets can be added here if needed
             ],
           ),
         );
       },
     );
+  }
+
+  bool _isPastDeadline(int hour) {
+    return hour >= 17 || hour < 9;
   }
 }
 
