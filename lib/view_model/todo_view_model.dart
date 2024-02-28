@@ -15,7 +15,20 @@ class TodoViewModel extends ChangeNotifier {
 
   // Method to add a todo
   void addTodo(String title) {
-    _todos.add(Todo(title: title));
+    DateTime now = DateTime.now();
+    int hour = now.hour;
+
+    // Set the timestamp based on the current time
+    DateTime timestamp = now;
+    if (hour >= 17) {
+      // If it's past 5 PM, set the timestamp to the next day at 9 AM
+      timestamp = DateTime(now.year, now.month, now.day + 1, 9);
+    } else if (hour < 9) {
+      // If it's before 9 AM, set the timestamp to today at 9 AM
+      timestamp = DateTime(now.year, now.month, now.day, 9);
+    }
+
+    _todos.add(Todo(title: title, timestamp: timestamp)); // Update timestamp
     _saveTodos();
     notifyListeners();
   }

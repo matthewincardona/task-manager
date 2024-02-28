@@ -3,11 +3,14 @@ import 'dart:convert';
 class Todo {
   final String title;
   bool isCompleted;
+  DateTime timestamp; // Add timestamp property
 
   Todo({
     required this.title,
     this.isCompleted = false,
-  });
+    DateTime? timestamp, // Make timestamp optional
+  }) : timestamp = timestamp ??
+            DateTime.now(); // Initialize timestamp when creating a todo
 
   Map<String, dynamic> toJson() {
     return {

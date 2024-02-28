@@ -21,12 +21,12 @@ class _TodoViewState extends State<TodoView> {
 
   @override
   Widget build(BuildContext context) {
+    int currentHour = DateTime.now().hour; // Get current hour
     return Scaffold(
       body: Column(
         children: [
-          const TodoList(),
-          CountdownView(
-              viewModel: _viewModel), // Pass the view model to the widget
+          CountdownView(viewModel: _viewModel),
+          TodoList(currentHour: currentHour), // Pass current hour
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -38,69 +38,60 @@ class _TodoViewState extends State<TodoView> {
 }
 
 class TodoList extends StatelessWidget {
-  const TodoList({Key? key}) : super(key: key);
+  // Add a parameter to get the current hour
+  const TodoList({Key? key, required this.currentHour}) : super(key: key);
+
+  final int currentHour;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TodoViewModel>(
       builder: (context, viewModel, child) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-          margin: const EdgeInsets.fromLTRB(20, 80, 20, 50),
-          decoration: BoxDecoration(
-            // border: Border.all(color: Colors.blueAccent),
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 2,
-                blurRadius: 7,
-                offset: const Offset(0, 0),
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              ListView.builder(
+                shrinkWrap:
+                    true, // Ensure the ListView takes only the space it needs
+                itemCount: viewModel.todos.length,
+                itemBuilder: (context, index) {
+                  final todo = viewModel.todos[index];
+                  final bool isPastDeadline =
+                      todo.timestamp.hour >= 17 || todo.timestamp.hour < 9;
+
+                  return Dismissible(
+                    key: Key(todo.title),
+                    onDismissed: (direction) {
+                      viewModel.removeTodo(index);
+                    },
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    child: CheckboxListTile(
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(
+                        todo.title,
+                        style: todo.isCompleted || isPastDeadline
+                            ? const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey) // Grey out past due tasks
+                            : null,
+                      ),
+                      value: todo.isCompleted,
+                      onChanged: isPastDeadline
+                          ? null // Disable checking for past due tasks
+                          : (newValue) {
+                              viewModel.toggleTodo(index);
+                            },
+                    ),
+                  );
+                },
               ),
+              // Additional widgets can be added here if needed
             ],
-          ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints.tightFor(height: 400),
-            child: SingleChildScrollView(
-              child: SizedBox(
-                height: 400,
-                child: ListView.builder(
-                  itemCount: viewModel.todos.length,
-                  itemBuilder: (context, index) {
-                    final todo = viewModel.todos[index];
-                    return Dismissible(
-                      key: Key(todo.title), // Use unique key for each todo
-                      onDismissed: (direction) {
-                        viewModel
-                            .removeTodo(index); // Remove todo from the list
-                      },
-                      background: Container(
-                        color: Colors
-                            .red, // Background color when swiping to delete
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-                      child: CheckboxListTile(
-                        controlAffinity: ListTileControlAffinity.leading,
-                        title: Text(
-                          todo.title,
-                          style: todo.isCompleted
-                              ? const TextStyle(
-                                  decoration: TextDecoration.lineThrough)
-                              : null,
-                        ),
-                        value: todo.isCompleted,
-                        onChanged: (newValue) {
-                          viewModel.toggleTodo(index);
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
           ),
         );
       },
@@ -121,7 +112,7 @@ class CountdownView extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              margin: const EdgeInsets.only(bottom: 10),
+              margin: const EdgeInsets.fromLTRB(0, 80, 0, 15),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                     begin: Alignment.topLeft,
